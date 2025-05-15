@@ -82,7 +82,7 @@ exports.searchMovies = async (query, page = 1) => {
 };
 
 exports.fetchMovieDetails = async (movieId) => {
-  const url = `${BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&language=en-US`;
+  const url = `${TMDB_BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US`;
 
   const response = await axios.get(url);
   return response.data;
