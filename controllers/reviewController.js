@@ -17,8 +17,10 @@ exports.addReview = async (req, res) => {
     await newReview.save();
     res.status(201).json(newReview);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to add review' });
-  }
+  console.error("Error adding review:", err);  // Add this
+  res.status(500).json({ error: err.message });  // More helpful for debugging
+}
+
 };
 
 // GET /api/reviews/:movieId

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-exports.protect = (req, res, next) => {
+exports.protect = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
 
   if (!authHeader) return res.status(401).json({ message: 'Authorization header missing' });
@@ -10,7 +11,11 @@ exports.protect = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Attach user info to request
+
+    const user = await User.findById(decoded.id); // get full user from DB
+    if (!user) return res.status(401).json({ message: 'User not found' });
+
+    req.user = user; // attach full user
     next();
   } catch (err) {
     return res.status(401).json({ message: 'Invalid or expired token' });
