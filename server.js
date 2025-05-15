@@ -2,6 +2,7 @@ const dotenv = require('dotenv');
 const app = require('./app');
 const mongoose = require('mongoose')
 dotenv.config({path:'./.env'});
+require('dotenv').config();
 
 const DB = process.env.MONGO_URI;
 

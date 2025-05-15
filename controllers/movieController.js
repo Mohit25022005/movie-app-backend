@@ -1,101 +1,42 @@
-const Movie = require('./../models/tourModel')
-exports.getAllMovies=async (req,res)=>{
-    try{
-        const movies =await Movie.find()
-        res.status(200).json({
-            status:"ok",
-            data:{
-                movies
-            }
-        })
-    }catch(err){
-        res.status(404).json({
-            status:"fail",
-            message:"ERROR=> "+err
-        })
-    }
-}
+const tmdbService = require('../services/tmdbService');
 
-exports.createMovie = async(req,res)=>{
-    try{
-        const newMovie = await Movie.create({
-            movieName:req.body.movieName,
-            movieRating:req.body.movieRating,
-            releaseDate:req.body.releaseDate,
-            directorName:req.body.directorName
-        })
-        res.status(201).json({
-            status:"ok",
-            data:{
-                movies:newMovie
-            }
-        })
-    }
-    catch(err){
-        res.status(404).json({
-            status:"fail",
-            message:"ERROR=> "+err
-        })
-    }
-}
-exports.deleteMovie = async (req,res)=>{
-    try{
-        await Movie.findByIdAndDelete(req.params.id)
-        res.status(204).json({
-            status:"ok",
-            data:null,
+exports.getUpcomingMovies = async (req, res) => {
+  try {
+    const { page = 1 } = req.query;
+    const movies = await tmdbService.fetchMovies('upcoming', page);
+    res.json(movies);
+  } catch (err) {
+    console.error('Error fetching upcoming movies:', err.message);
+    res.status(500).json({ error: 'Failed to fetch upcoming movies' });
+  }
+};
 
-        })
-    }
-    catch(err){
-         res.status(404).json({
-            status:"fail",
-            message:"ERROR=> "+err
-        })
-    }
-}
 
-exports.filterByName =async (req,res)=>{
-    try{
-        const stats = await Movie.aggregate([
-            {
-                $match:{"directorName":req.body.directorName}
-            }
-        ])
-        res.status(200).json({
-            status:"ok",
-            data:{
-                stats
-            }
-        })
-        
-    }
-    catch(err){
-        res.status(404).json({
-            status:"fail",
-            message:"ERROR=> "+err
-        }) 
-    }
-}
+exports.getPopularMovies = async (req, res) => {
+  try {
+    const { page = 1 } = req.query;
+    const movies = await tmdbService.fetchMovies('popular', page);
+    res.json(movies);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch popular movies' });
+  }
+};
 
-exports.rating = async(req,res)=>{
-    try{
-        const stats = await Movie.aggregate([
-            {
-                $match:{"movieRating":{$gt:7}}
-            }
-        ])
-        res.status(200).json({
-            status:"ok",
-            data:{
-                stats
-            }
-        })
-    }
-    catch(err){
-        res.status(404).json({
-            status:"fail",
-            message:"ERROR=> "+err
-        }) 
-    }
-}
+exports.getTopRatedMovies = async (req, res) => {
+  try {
+    const { page = 1 } = req.query;
+    const movies = await tmdbService.fetchMovies('top_rated', page);
+    res.json(movies);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch top rated movies' });
+  }
+};
+
+exports.getLatestMovie = async (req, res) => {
+  try {
+    const movie = await tmdbService.fetchLatestMovie();
+    res.json(movie);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch latest movie' });
+  }
+};

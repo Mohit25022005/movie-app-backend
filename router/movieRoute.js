@@ -1,10 +1,12 @@
-const express = require('express')
-const movieController = require('./../controllers/movieController')
+const express = require('express');
+const router = express.Router();
+const movieController = require('../controllers/movieController');
+const { protect } = require('../middlewares/authMiddleware');
 
-const router = express.Router()
-router.route('/').get(movieController.getAllMovies).post(movieController.createMovie)
-router.route('/:id').delete(movieController.deleteMovie)
-router.route('/filtername').get(movieController.filterByName)
-router.route("/rating").get(movieController.rating)
+// Protected Routes
+router.get('/upcoming', protect, movieController.getUpcomingMovies);
+router.get('/popular', protect, movieController.getPopularMovies);
+router.get('/top_rated', protect, movieController.getTopRatedMovies);
+router.get('/latest', protect, movieController.getLatestMovie);
 
-module.exports = router; 
+module.exports = router;
