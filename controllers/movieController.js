@@ -40,3 +40,18 @@ exports.getLatestMovie = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch latest movie' });
   }
 };
+
+exports.searchMovies = async (req, res) => {
+  try {
+    const { q, page = 1 } = req.query;
+    if (!q) {
+      return res.status(400).json({ error: 'Query parameter "q" is required' });
+    }
+
+    const movies = await tmdbService.searchMovies(q, page);
+    res.json(movies);
+  } catch (err) {
+    console.error('Error searching movies:', err.response?.data || err.message);
+    res.status(500).json({ error: 'Failed to search movies' });
+  }
+};

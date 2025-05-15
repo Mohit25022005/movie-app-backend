@@ -62,3 +62,21 @@ exports.fetchLatestMovie = async () => {
     vote_average: movie.vote_average,
   };
 };
+
+exports.searchMovies = async (query, page = 1) => {
+  const response = await axios.get(`${TMDB_BASE_URL}/search/movie`, {
+    params: {
+      api_key: API_KEY,
+      language: 'en-US',
+      query,
+      page,
+    },
+  });
+
+  return {
+    page: response.data.page,
+    total_pages: response.data.total_pages,
+    total_results: response.data.total_results,
+    results: response.data.results.map(mapMovie),
+  };
+};
