@@ -64,11 +64,53 @@ exports.searchMovies = async (req, res) => {
       return res.status(400).json({ error: 'Query parameter "q" is required' });
     }
 
-    const data = await tmdbService.searchMovies(q, page);
-    const pagination = buildPagination(req, data);
-    res.json({ pagination, results: data.results });
+    const movies = await tmdbService.searchMovies(q, page);
+    res.json(movies);
   } catch (err) {
-    console.error('Error searching movies:', err.response?.data || err.message);
+    console.error('Error searching movies:', err.response?.data || err.message || err);
     res.status(500).json({ error: 'Failed to search movies' });
+  }
+};
+
+
+exports.getMovieDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const movie = await tmdbService.fetchMovieDetails(id);
+
+    const {
+      title,
+      overview,
+      genres,
+      popularity,
+      release_date,
+      original_language,
+      production_countries,
+      vote_count,
+      vote_average,
+      budget,
+      revenue,
+      homepage,
+      poster_path,
+    } = movie;
+
+    res.json({
+      title,
+      overview,
+      genres: genres.map(g => g.name),
+      popularity,
+      release_date,
+      original_language,
+      origin_country: production_countries.map(c => c.iso_3166_1),
+      vote_count,
+      vote_average,
+      budget,
+      revenue,
+      homepage,
+      poster_url: `https://image.tmdb.org/t/p/w500${poster_path}`,
+    });
+  } catch (err) {
+    console.error('Error fetching movie details:', err.response?.data || err.message);
+    res.status(500).json({ error: 'Failed to fetch movie details' });
   }
 };

@@ -9,5 +9,6 @@ router.get('/popular', protect, movieController.getPopularMovies);
 router.get('/top_rated', protect, movieController.getTopRatedMovies);
 router.get('/latest', protect, movieController.getLatestMovie);
 router.get('/search', protect, movieController.searchMovies);
+router.get('/:id', protect, movieController.getMovieDetails);
 
 module.exports = router;
