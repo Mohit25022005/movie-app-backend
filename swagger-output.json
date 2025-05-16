@@ -11,7 +11,7 @@
     "http"
   ],
   "paths": {
-    "/signup": {
+    "/api/signup": {
       "post": {
         "description": "",
         "parameters": [
@@ -47,7 +47,7 @@
         }
       }
     },
-    "/login": {
+    "/api/login": {
       "post": {
         "description": "",
         "parameters": [
@@ -80,7 +80,7 @@
         }
       }
     },
-    "/": {
+    "/api/favorites": {
       "post": {
         "description": "",
         "parameters": [
@@ -96,9 +96,6 @@
               "type": "object",
               "properties": {
                 "movieId": {
-                  "example": "any"
-                },
-                "content": {
                   "example": "any"
                 }
               }
@@ -142,7 +139,7 @@
         }
       }
     },
-    "/upcoming": {
+    "/api/movies/upcoming": {
       "get": {
         "description": "",
         "parameters": [
@@ -170,7 +167,7 @@
         }
       }
     },
-    "/popular": {
+    "/api/movies/popular": {
       "get": {
         "description": "",
         "parameters": [
@@ -198,7 +195,7 @@
         }
       }
     },
-    "/top_rated": {
+    "/api/movies/top_rated": {
       "get": {
         "description": "",
         "parameters": [
@@ -226,7 +223,7 @@
         }
       }
     },
-    "/latest": {
+    "/api/movies/latest": {
       "get": {
         "description": "",
         "parameters": [
@@ -249,7 +246,7 @@
         }
       }
     },
-    "/search": {
+    "/api/movies/search": {
       "get": {
         "description": "",
         "parameters": [
@@ -285,7 +282,7 @@
         }
       }
     },
-    "/{id}": {
+    "/api/movies/{id}": {
       "get": {
         "description": "",
         "parameters": [
@@ -314,7 +311,45 @@
         }
       }
     },
-    "/{movieId}": {
+    "/api/reviews": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "movieId": {
+                  "example": "any"
+                },
+                "content": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/reviews/{movieId}": {
       "get": {
         "description": "",
         "parameters": [
@@ -335,7 +370,7 @@
         }
       }
     },
-    "/{reviewId}": {
+    "/api/reviews/{reviewId}": {
       "delete": {
         "description": "",
         "parameters": [

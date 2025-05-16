@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 
 const limiter = rateLimit({
-  max: 10,
+  max: 1000,
   windowMs: 60 * 60 * 1000, // 1 hour
   handler: (req, res, next) => {
     res.set('X-RateLimit-Reason', 'Too many requests'); // Custom header
@@ -42,9 +42,9 @@ const reviewRoutes = require('./router/reviewRoutes');
 const favoritesRoutes = require('./router/favoritesRoutes');
 
 // Route Mappings
-app.use('/api/movies', movieRouter);
-app.use('/api', authRouter);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api/favorites', favoritesRoutes);
+app.use('/', movieRouter);
+app.use('/', authRouter);
+app.use('/', reviewRoutes);
+app.use('/', favoritesRoutes);
 
 module.exports = app;
