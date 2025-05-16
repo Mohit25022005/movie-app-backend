@@ -1,15 +1,30 @@
 const express = require('express');
-const app = express();
-require('dotenv').config();
+const dotenv = require('dotenv');
+const redisClient = require('./redis/redisClient');
 
+dotenv.config();
+const app = express();
+
+// Redis client connection
+(async () => {
+  try {
+    await redisClient.connect();
+    console.log('Connected to Redis');
+  } catch (err) {
+    console.error('Redis connection error:', err.message);
+  }
+})();
+
+// Middleware
+app.use(express.json());
+
+// Routers
 const movieRouter = require('./router/movieRoute');
-const authRouter = require('./router/authRoutes'); 
+const authRouter = require('./router/authRoutes');
 const reviewRoutes = require('./router/reviewRoutes');
 const favoritesRoutes = require('./router/favoritesRoutes');
 
-app.use(express.json());
-
-// Routes
+// Route Mappings
 app.use('/api/movies', movieRouter);
 app.use('/api', authRouter);
 app.use('/api/reviews', reviewRoutes);
