@@ -3,10 +3,6 @@ require('dotenv').config();
 exports.connectRedis = async () => {
   const redisClient = createClient({
     url: process.env.REDIS_URL,
-    socket: {
-      tls: true,
-      rejectUnauthorized: false, // Optional: remove if your cert is valid/trusted
-    },
   });
 
   redisClient.on('error', (err) => console.log('Redis Client Error', err));
