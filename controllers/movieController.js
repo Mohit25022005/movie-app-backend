@@ -51,11 +51,13 @@ exports.getTopRatedMovies = async (req, res) => {
 exports.getLatestMovie = async (req, res) => {
   try {
     const movie = await tmdbService.fetchLatestMovie();
-    res.json(movie); // No pagination for latest
+    res.json(movie);
   } catch (err) {
+    console.error('Error fetching latest movie:', err.response?.data || err.message);
     res.status(500).json({ error: 'Failed to fetch latest movie' });
   }
 };
+
 
 exports.searchMovies = async (req, res) => {
   try {

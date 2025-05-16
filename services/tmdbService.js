@@ -19,14 +19,22 @@ const mapMovie = (movie) => ({
 async function fetchWithRetry(url, params, retries = 3) {
   for (let i = 0; i < retries; i++) {
     try {
-      return await axios.get(url, { params });
+      return await axios.get(url, {
+        params,
+        timeout: 10000,
+      });
     } catch (error) {
+      console.error(`Axios error (attempt ${i + 1}):`, error.message);
+      if (error.response) {
+        console.error('Status:', error.response.status);
+        console.error('Data:', error.response.data);
+      }
       if (i === retries - 1) throw error;
-      console.warn(`Request failed, retrying (${i + 1}/${retries})...`);
-      await new Promise(res => setTimeout(res, 1000)); // wait 1 second before retry
+      await new Promise(res => setTimeout(res, 1500)); // longer wait before retry
     }
   }
 }
+
 
 exports.fetchMovies = async (category, page = 1) => {
   const response = await fetchWithRetry(`${TMDB_BASE_URL}/movie/${category}`, {
@@ -47,7 +55,8 @@ exports.fetchLatestMovie = async () => {
   const response = await fetchWithRetry(`${TMDB_BASE_URL}/movie/latest`, {
     api_key: API_KEY,
     language: 'en-US',
-  });
+});
+
 
   const movie = response.data;
   return {
