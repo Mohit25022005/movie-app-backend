@@ -1,6 +1,8 @@
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
 const dotenv = require('dotenv');
 const redisClient = require('./redis/redisClient');
+const swaggerDocument = require('./swagger-output.json');
 
 dotenv.config();
 const app = express();
@@ -17,6 +19,7 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routers
 const movieRouter = require('./router/movieRoute');
