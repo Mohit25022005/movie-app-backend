@@ -13,6 +13,7 @@ This project is a **backend API service** for a movie platform, developed using 
 - ✍️ **Add/Delete Reviews** (stored in MongoDB)
 - ❤️ **Manage Favorites** (stored in MongoDB)
 - 📃 **Pagination Support** for movie listings
+- 🧾 **Auto-generated Swagger API Docs**
 - 🔧 Configurable via `.env`
 
 ---
@@ -93,15 +94,17 @@ npm install
 # Docker - Redis Setup
 docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
 docker ps
-docker exec -it (container_id) bash
+docker exec -it <container_id> bash
 
 # Start the server with nodemon
 nodemon server.js
-```
 
-# Set environment Variables
-PORT=5000
+```
+### .env file
+PORT=3000
 MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
 TMDB_API_KEY=your_tmdb_api_key
 
+###📚 Generate Swagger Docs
+npm run generateDoc
