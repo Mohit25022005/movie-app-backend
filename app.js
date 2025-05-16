@@ -1,4 +1,5 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const swaggerUi = require('swagger-ui-express');
 const dotenv = require('dotenv');
 const redisClient = require('./redis/redisClient');
@@ -7,6 +8,19 @@ const swaggerDocument = require('./swagger-output.json');
 dotenv.config();
 const app = express();
 
+const limiter = rateLimit({
+  max: 10,
+  windowMs: 60 * 60 * 1000, // 1 hour
+  handler: (req, res, next) => {
+    res.set('X-RateLimit-Reason', 'Too many requests'); // Custom header
+    res.status(429).json({
+      success: false,
+      message: 'We have received too many requests from this IP. Please try after one hour'
+    });
+  }
+});
+
+app.use('/api',limiter);
 // Redis client connection
 (async () => {
   try {
