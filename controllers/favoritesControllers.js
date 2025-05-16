@@ -1,8 +1,14 @@
 const Favorite = require('../models/Favorite');
+const { connectRedis } = require('../redis/redisClient');
+
+let redisClient;
+(async () => {
+  redisClient = await connectRedis();
+})();
 
 exports.addFavorite = async (req, res) => {
   try {
-    const userId = req.user._id;  // Assuming `req.user` set by auth middleware
+    const userId = req.user._id;
     const { movieId } = req.body;
 
     if (!movieId) {
@@ -18,6 +24,10 @@ exports.addFavorite = async (req, res) => {
     const favorite = new Favorite({ userId, movieId });
     await favorite.save();
 
+    // Invalidate favorites cache for this user after adding a new favorite
+    const cacheKey = `favorites:user:${userId}`;
+    await redisClient.del(cacheKey);
+
     res.status(201).json({ message: 'Movie added to favorites' });
   } catch (err) {
     console.error('Error adding favorite:', err.message);
@@ -28,8 +38,19 @@ exports.addFavorite = async (req, res) => {
 exports.getFavorites = async (req, res) => {
   try {
     const userId = req.user._id;
+    const cacheKey = `favorites:user:${userId}`;
 
+    // Try cache first
+    const cached = await redisClient.get(cacheKey);
+    if (cached) {
+      return res.status(200).json(JSON.parse(cached));
+    }
+
+    // Cache miss: fetch from DB
     const favorites = await Favorite.find({ userId });
+
+    // Cache for 1 hour
+    await redisClient.setEx(cacheKey, 3600, JSON.stringify(favorites));
 
     res.json(favorites);
   } catch (err) {

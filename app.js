@@ -2,7 +2,6 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const swaggerUi = require('swagger-ui-express');
 const dotenv = require('dotenv');
-const redisClient = require('./redis/redisClient');
 const swaggerDocument = require('./swagger-output.json');
 
 dotenv.config();
@@ -22,14 +21,7 @@ const limiter = rateLimit({
 
 app.use('/api',limiter);
 // Redis client connection
-(async () => {
-  try {
-    await redisClient.connect();
-    console.log('Connected to Redis');
-  } catch (err) {
-    console.error('Redis connection error:', err.message);
-  }
-})();
+
 
 // Middleware
 app.use(express.json());
